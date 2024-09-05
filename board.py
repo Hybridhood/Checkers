@@ -31,20 +31,19 @@ class Board:
         for x in range(len(self.brd)):
             for y in range(len(self.brd)):
                 if self.brd[x][y] == "X":
-                    pygame.draw.circle(self.screen, "white", (y * self.x_size + self.x_size / 2, x * self.y_size + self.y_size / 2), 50)
+                    pygame.draw.circle(self.screen, "white", (y * self.x_size + self.x_size / 2, x * self.y_size + self.y_size / 2), 20)
                 elif self.brd[x][y] == "O":
-                    pygame.draw.circle(self.screen, "black", (y * self.x_size + self.x_size / 2, x * self.y_size + self.y_size / 2), 50)
+                    pygame.draw.circle(self.screen, "black", (y * self.x_size + self.x_size / 2, x * self.y_size + self.y_size / 2), 20)
                 elif self.brd[x][y] == ".":
-                    pygame.draw.circle(self.screen, "blue", (y * self.x_size + self.x_size / 2, x * self.y_size + self.y_size / 2), 10)
+                    pygame.draw.circle(self.screen, "blue", (y * self.x_size + self.x_size / 2, x * self.y_size + self.y_size / 2), 4)
 
-        
+
     def select_piece(self):
         self.mousepress = not self.mousepress
         x, y = pygame.mouse.get_pos()
-        col = x // 125  
-        row = y // 125
+        col = x // 50  
+        row = y // 50
         piece_on = row, col
-        
         if self.brd[piece_on[0]][piece_on[1]] == "X":
             if piece_on == self.selected:
                 self.clear_possible_moves()
@@ -66,7 +65,7 @@ class Board:
                             self.brd[self.selected[0]+2][self.selected[1]+2] = "."
             except IndexError:
                 print("Out of range")
-        
+
         elif self.brd[piece_on[0]][piece_on[1]] == "O":
             if piece_on == self.selected:
                 self.clear_possible_moves()
@@ -82,8 +81,7 @@ class Board:
                             self.brd[self.selected[0]-1][self.selected[1]+1] = "."
             except IndexError:
                 print("Out of range")
-        if self.selected != None:
-            self.check_for_move(piece_on)
+        self.check_for_move(piece_on)
 
     def clear_possible_moves(self):
         for i in range(len(self.brd)):
@@ -93,14 +91,21 @@ class Board:
         self.selected = None
 
     def check_for_move(self, piece_on):
+        if self.selected != piece_on:
+            if self.brd[piece_on[0]][piece_on[1]] == 0:
+                self.clear_possible_moves()
+                return
         if self.brd[self.selected[0]][self.selected[1]] == "X":
             if self.brd[piece_on[0]][piece_on[1]] == ".":
                 self.move_piece_to(piece_on, "X")
+                
         elif self.brd[self.selected[0]][self.selected[1]] == "O":
             if self.brd[piece_on[0]][piece_on[1]] == ".":
                 self.move_piece_to(piece_on, "O")
+                
         elif self.brd[piece_on[0]][piece_on[1]] == 0:
             self.clear_possible_moves()
+            
 
     def move_piece_to(self, piece_on, piece_type):
         self.brd[self.selected[0]][self.selected[1]] = 0
@@ -109,4 +114,3 @@ class Board:
     def toggle_mouse_press(self):
         self.mousepress = not self.mousepress
         return self.mousepress
-            
